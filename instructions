@@ -1,0 +1,126 @@
+Create Amazon ECS Service
+Open the create-service.json file:
+
+In AWS Cloud9, navigate to the my-webapp-repo folder and locate the create-service.json file.
+Open the file.
+Update the create-service.json file:
+
+Replace the targetGroupARN value in line 6 with the appropriate value from the environment outputs (TargetGroup1ARN).
+Replace the sample entries for subnets in lines 20 and 21 with the appropriate values (Subnet1 and Subnet2).
+Replace the sample security group entry in the securityGroups in line 24 with the appropriate value (SecurityGroupID).
+The updated file should look like this:
+json
+Copy code
+{
+  "serviceName": "MyApp-Web-service",
+  "taskDefinition": "arn:aws:ecs:us-west-2:000000000000:task-definition/my-webapp:1",
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:000000000000:targetgroup/MyApp-ALB-target1/553b1785838b7a0f",
+      "containerName": "my-webapp",
+      "containerPort": 80
+    }
+  ],
+  "desiredCount": 1,
+  "launchType": "FARGATE",
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": [
+        "subnet-0cc4643e574a9c4ad",
+        "subnet-0c84b76a63ebdcfa0"
+      ],
+      "securityGroups": [
+        "sg-0b15b19182b9eea0c"
+      ],
+      "assignPublicIp": "ENABLED"
+    }
+  }
+}
+Save the file.
+
+Create the service using AWS CLI:
+
+Open the terminal in AWS Cloud9.
+Execute the following command to create the service:
+bash
+Copy code
+aws ecs create-service --service-name MyApp-Web-service --cli-input-json file://create-service.json
+You should see output confirming the service creation.
+Task 2: Push Changes to Source Repository
+Check the status of changes:
+
+Make sure you are in the my-webapp-repo folder:
+bash
+Copy code
+cd my-webapp-repo
+Check the Git status:
+bash
+Copy code
+git status
+Add changes to Git:
+
+Run the following commands to add changes and push them to the Git repository:
+bash
+Copy code
+git add .
+git commit -m "Updated taskdef file"
+git push
+Task 3: Review Application Status
+Check Load Balancer DNS:
+
+Get the LoadBalancerDNSName from the information in the console.
+Open the application in a browser:
+
+Open a new tab in your browser and enter the LoadBalancerDNSName to review the page.
+Task 4: Configure Blue/Green Deployment
+Create a CodeDeploy Application:
+
+Go to AWS CodeDeploy and create a new application named MyApp-Web.
+Choose the compute platform as Amazon ECS.
+Create a Deployment Group:
+
+Create a new deployment group named MyApp-Web-ECS-Group and select CodeDeploy_Service_Role as the service role.
+Configure the Environment:
+
+Choose my-webapp-cluster as the ECS Cluster name.
+Choose MyApp-Web-service as the ECS Service name.
+Choose MyApp-ALB as the Load Balancer.
+Configure Deployment Settings:
+
+Choose Reroute traffic immediately and CodeDeployDefault.ECSAllAtOnce.
+Create the Deployment Group.
+
+Task 5: Add Deployment Stage to Pipeline
+Add a New Deployment Stage:
+
+Go to my-webapp-pipeline in AWS CodePipeline.
+Click Edit, then Add stage, and enter the stage name Deploy.
+Add a New Action Group:
+
+Choose Add action group.
+Enter my-webapp-deploy as the action name and select Amazon ECS (Blue/Green).
+Configure the Options:
+
+Choose MyApp-Web as the CodeDeploy Application and MyApp-Web-ECS-Group as the Deployment Group.
+Select SourceArtifact and BuildArtifact for the appropriate inputs.
+Save Changes.
+
+Task 6: Test CodePipeline Automation
+Change the Application Code:
+
+Open the Dockerfile and change the background color from blue to green.
+Save the changes.
+Push the changes to the repository using:
+bash
+Copy code
+git add .
+git commit -m "Updated Dockerfile file"
+git push
+Monitor the Deployment Process:
+
+Go to CodePipeline to monitor the progress of the deployment.
+Check the deployment details when the status reaches the deployment phase.
+Verify Changes in the Application:
+
+Refresh the open tab in your browser to see the changes on the website.
+By following these detailed steps, you will be able to create an Amazon ECS servic
