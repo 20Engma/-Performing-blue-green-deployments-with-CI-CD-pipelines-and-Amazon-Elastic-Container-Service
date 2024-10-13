@@ -1,4 +1,4 @@
-# -Performing-blue-green-deployments-with-CI-CD-pipelines-and-Amazon-Elastic-Container-Service
+# Performing-blue-green-deployments-with-CI-CD-pipelines-and-Amazon-Elastic-Container-Service
 Project Overview
 In this project, you will use AWS DevOps tools to build Docker container images and store them in Amazon Elastic Container Registry (Amazon ECR). You will implement blue/green deployments of a containerized web application into an Amazon Elastic Container Service (Amazon ECS) cluster managed by AWS Fargate. Additionally, you will configure a comprehensive continuous deployment (CD) pipeline using AWS CodeBuild, Amazon ECR, and AWS CodeDeploy to build and store the container image and then perform a blue/green deployment.
 
